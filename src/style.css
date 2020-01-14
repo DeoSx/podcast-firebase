@@ -71,3 +71,7 @@ button {
 .modal-content {
 
 }
+
+.error {
+  color: red;
+}

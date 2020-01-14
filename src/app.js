@@ -35,14 +35,27 @@ function submitFormHandler(event) {
 
 function openModal() {
 	createModal('Авторизация', getAuthForm())
-	document.querySelector('#auth-form').addEventListener('submit', authFormHandler, {once: true})
+	document.querySelector('#auth-form').addEventListener('submit', authFormHandler, { once: true })
 }
 
 function authFormHandler(event) {
 	event.preventDefault()
 
+	const btn = event.target.querySelector('button')
 	const email = event.target.querySelector('#email').value
 	const password = event.target.querySelector('#password').value
 
+	btn.disabled = true
 	authWithEmailAndPassword(email, password)
+		.then(Question.fetch)
+		.then(renderModalAfterAuth)
+		.then(() => btn.disabled = false)
+}
+
+function renderModalAfterAuth(content) {
+	if (typeof content === 'string') {
+		createModal('Ошибка', content)
+	} else {
+		createModal('Список вопросов', Question.listToHTML(content))
+	}
 }
